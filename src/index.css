@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* Hapus styling global yang bentrok dengan Tailwind */
+body {
+  margin: 0;
+  /* Biarkan Tailwind yang mengatur background, font, dsb */
+}
+
+/* Optional: reset dasar untuk anchor */
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+/* Hapus :root, h1, button, dan media query yang mengatur warna/font/background/layout global */
+
+/* ...tambahkan custom style lain jika memang diperlukan, namun utamakan Tailwind */

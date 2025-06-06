@@ -1,0 +1,21 @@
+// src/pages/CMSPage.tsx
+// Import semua komponen yang ingin ditampilkan
+import ArtikelList from "../components/ArtikelList";
+import ShalomList from "../components/ShalomList";
+
+export default function CMSPage() {
+  return (
+    <div className="max-w-5xl mx-auto p-6 space-y-10">
+      <h1 className="text-2xl font-bold mb-8">Content Management System</h1>
+      <section>
+        <ArtikelList />
+      </section>
+      <section>
+        
+      </section>
+      <section>
+        <ShalomList />
+      </section>
+    </div>
+  );
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/gkicinda.svg" />
+    <link rel="alternate icon" type="image/png" href="/gkicinda.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GKI Cinda Dashboard</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyDNsFpx8nUNPBJBkyplMxbVQFSlY7s_xS8",
+      authDomain: "gkicinda-admin.firebaseapp.com",
+      projectId: "gkicinda-admin",
+      storageBucket: "gkicinda-admin.firebasestorage.app",
+      messagingSenderId: "269378436934",
+      appId: "1:269378436934:web:d63bfd5f8ce313e0222f47",
+      measurementId: "G-P4LTJRBETB",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+</html>
