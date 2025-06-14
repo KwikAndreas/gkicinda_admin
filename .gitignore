@@ -1,4 +1,6 @@
-src/api/*.json
+src/api/gkicinda-290387fa609f.json
+# atau jika ingin lebih umum:
+# src/api/*.json
 
 # Logs
 logs
