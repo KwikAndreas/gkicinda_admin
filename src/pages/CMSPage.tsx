@@ -1,6 +1,5 @@
-// src/pages/CMSPage.tsx
-// Import semua komponen yang ingin ditampilkan
 import ArtikelList from "../components/ArtikelList";
+import InformasiList from "../components/InformasiList";
 import ShalomList from "../components/ShalomList";
 
 export default function CMSPage() {
@@ -10,9 +9,11 @@ export default function CMSPage() {
       <section>
         <ArtikelList />
       </section>
+
       <section>
-        
+        <InformasiList />
       </section>
+
       <section>
         <ShalomList />
       </section>
