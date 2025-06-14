@@ -1,3 +1,5 @@
+src/api/*.json
+
 # Logs
 logs
 *.log
