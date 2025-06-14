@@ -16,9 +16,9 @@ type EditShalomModalProps = {
 };
 
 const kategoriOptions = [
-  "renungan",
-  "bacaan",
-  "pokok_doa",
+  "Renungan",
+  "Bacaan",
+  "Pokok_doa",
 ] as const;
 
 export default function EditShalomModal({
