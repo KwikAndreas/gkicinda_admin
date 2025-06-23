@@ -1,14 +1,16 @@
-import { type NextApiRequest, type NextApiResponse } from "next";
-import { BetaAnalyticsDataClient } from "@google-analytics/data";
-import fs from "fs";
+```javascript
+const express = require("express");
+const { BetaAnalyticsDataClient } = require("@google-analytics/data");
+const fs = require("fs");
+require("dotenv").config();
+
+const app = express();
+const port = 3001;
 
 const analyticsDataClient = new BetaAnalyticsDataClient();
 const propertyId = process.env.GA_PROPERTY_ID;
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+app.get("/api/analytics", async (req, res) => {
   try {
     const { type, metric } = req.query;
 
@@ -93,4 +95,9 @@ export default async function handler(
       error: error.message || "Failed to fetch analytics data",
     });
   }
-}
+});
+
+app.listen(port, () => {
+  console.log(`API server listening at http://localhost:${port}`);
+});
+```

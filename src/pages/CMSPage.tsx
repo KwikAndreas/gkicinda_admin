@@ -1,6 +1,7 @@
 import ArtikelList from "../components/ArtikelList";
 import InformasiList from "../components/InformasiList";
 import ShalomList from "../components/ShalomList";
+import DownloadPage from "./Download";
 
 export default function CMSPage() {
   return (
@@ -17,6 +18,10 @@ export default function CMSPage() {
 
       <section>
         <InformasiList />
+      </section>
+
+      <section>
+        <DownloadPage />
       </section>
     </div>
   );

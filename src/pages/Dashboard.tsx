@@ -15,7 +15,6 @@ export default function Dashboard() {
   const [weeklyUsers, setWeeklyUsers] = useState<number | null>(null);
   const [monthlyUsers, setMonthlyUsers] = useState<number | null>(null);
 
-  // Tambahan state untuk timeseries
   const [userActivity, setUserActivity] = useState<
     { date: string; value: number }[]
   >([]);
@@ -34,12 +33,10 @@ export default function Dashboard() {
       .get("/api/analytics?type=monthly")
       .then((res) => setMonthlyUsers(Number(res.data.users) || 0));
 
-    // Ambil data timeseries user activity
     axios
       .get("/api/analytics?type=timeseries")
       .then((res) => setUserActivity(res.data.data || []));
 
-    // Ambil data timeseries average engagement time per user
     axios
       .get("/api/analytics?type=timeseries&metric=averageEngagementTimePerUser")
       .then((res) => setAvgEngagement(res.data.data || []));
@@ -51,10 +48,8 @@ export default function Dashboard() {
     { name: "Bulanan", Pengguna: monthlyUsers ?? 0 },
   ];
 
-  // Format tanggal untuk chart
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
-    // dateStr: YYYYMMDD
     return `${dateStr.slice(6, 8)}/${dateStr.slice(4, 6)}`;
   };
 
@@ -71,7 +66,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold mb-4 text-gray-700">
               User Activity (30 Hari Terakhir)
             </h2>
-            <div className="flex-1 h-64">
+            <div className="flex-1 h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={userActivity.map((d) => ({

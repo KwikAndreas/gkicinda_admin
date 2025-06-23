@@ -66,7 +66,7 @@ export default function InformasiList() {
       ) : (
         data.map((item) => (
           <div
-            key={item.id}
+            key={`${item.kategori}-${item.id}`}
             className={`mb-4 border-l-8 pb-4 pl-4 rounded ${
               item.kategori === "kegiatan"
                 ? "border-blue-500"
