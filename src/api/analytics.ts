@@ -2,10 +2,34 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 import fs from "fs"; // Digunakan untuk pemeriksaan kredensial
 
+let analyticsDataClient: BetaAnalyticsDataClient;
+
+// Periksa apakah kredensial JSON ada di variabel lingkungan
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+    try {
+        const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+        analyticsDataClient = new BetaAnalyticsDataClient({
+            credentials: {
+                client_email: credentials.client_email,
+                private_key: credentials.private_key,
+            },
+        });
+        console.log("[SERVER] Google Analytics Client initialized from JSON environment variable.");
+    } catch (e) {
+        console.error("[SERVER] Error parsing GOOGLE_APPLICATION_CREDENTIALS_JSON:", e);
+        // Fallback ke inisialisasi default jika parsing gagal
+        analyticsDataClient = new BetaAnalyticsDataClient();
+    }
+} else {
+    // Jika GOOGLE_APPLICATION_CREDENTIALS_JSON tidak disetel, biarkan SDK mencari
+    // GOOGLE_APPLICATION_CREDENTIALS (path) atau kredensial default GCE/Cloud Run
+    analyticsDataClient = new BetaAnalyticsDataClient();
+    console.warn("[SERVER] GOOGLE_APPLICATION_CREDENTIALS_JSON not found. Relying on default credential lookup.");
+}
+
 // Inisialisasi client Google Analytics Data API.
 // Kredensial akan secara otomatis dicari dari variabel lingkungan GOOGLE_APPLICATION_CREDENTIALS
 // atau lingkungan runtime Google Cloud (misalnya, Google Cloud Functions, App Engine).
-const analyticsDataClient = new BetaAnalyticsDataClient();
 
 // Ambil GA_PROPERTY_ID dari variabel lingkungan.
 // Penting: Pastikan ini diatur di .env.local atau di konfigurasi deployment Anda.

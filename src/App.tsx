@@ -1,5 +1,6 @@
 import Dashboard from "./pages/Dashboard";
 import CMSManager from "./pages/CMSPage";
+
 export default function App() {
   return (
     <main className="min-h-screen bg-gray-100 px-4 md:px-8 py-6">
