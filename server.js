@@ -14,9 +14,9 @@ let analyticsDataClient;
 const propertyId = process.env.GA_PROPERTY_ID;
 
 // Inisialisasi client dari file JSON
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
   const credentials = JSON.parse(
-    fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS, "utf8")
+    fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON, "utf8")
   );
   analyticsDataClient = new BetaAnalyticsDataClient({
     credentials: {
