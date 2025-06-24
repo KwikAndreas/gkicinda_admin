@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "gkicinda",
+  "private_key_id": "290387fa609f61b659a1635f46b87ee22e4da841",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCSBLffOF2UG2BM\nHePyZgt9KkYxR/FMY9yDKgGmNf3sgiHHwU0jeL+5JfFkftcypR+BGDSlKe/VQrH8\niO89AzL2446TlDjUWPApJgLZ8ZTRQqPTDlB3bya9YBVExYFiix/kgt2u8IFh/Spx\nnxOCoPps4qPZYvS4LQkFGkuCEQDgyDqHCJDUHBSMvzBzV2U/8ofEa2EgewJEN6fp\nqithqS8yrmUQ42luZcU8nCl8ddKBUb7Vohk4rJjGMVaPaHpeP33X3kVdOBxkFqwT\nH2OL4WWceZWFCDThEAlv7zHHyMcLa92to5Y/NgUGyIBnbOz5kaoGwNPiOTJUkTfb\nYBvRg4zXAgMBAAECggEAFyVZUjB4oPQP+TDZw8BKPO55DvHE/aNsvnvnpAW1+QoN\nucDZ7fADkCFEGPaEPTpweoGwQqgZpNf8J7g7GBRMPVeH77vUoFByzUsBs7N4MA2c\ns2V2+t+rJ+S1ql+WaVz9Urct1b+4+qPrWPRq3s+OsrjgWSK3AQTeg6kN5BG27mqB\nlOp6Pbw9I/hRRcsA/G/C8pRND0t7eAQiKffixzNWRIElnFFJWSC/o/TuZeHGseok\nicYLdqekkxRzxW5c5QtBlYtqQdSUH3YIzQ2k1EzWGGZcY2RODLyJAZDl+6bTMZ5V\nnvJ8YcWR47RJhLoIKWQWhzSk+XIBWWmvXNkj1P5FdQKBgQDB0B9MxK+bWg25eiPa\n6duVQjilJbRx+oFDSrZoPxRKcLrBxUTryd1lldKky4DsE5x/eiXrw5cg8irUlopM\n1BNh9+2av4d8BM9E4mh3hi4ZFrm/QxOG5sjtIXNuy31fYmn6hwXYeac4i5RNjNAY\nGiGoRAW6Ea3AZj4DBwAnSqaUBQKBgQDA3rtzipaNxPw5eZt2vArc6coo7By7f7Oz\n21Z2VY1UPquRUchErvEcTFKCo1/PbqkmLLYYH84vAPXqIIoKN4E++6znc9z1rxrX\nvkzWm/RrbkpoXrJX03OCuAe7CXur3C1WtJ3hi+Ut9fTypbD6yZLHlaFuXH2gJnXJ\nF1dTaPTwKwKBgGEF9yVPMTnsEwLPCjQE7lACHqlN/s8wQJWXSUlWiqnZVSS7xIzl\nOVgpcJHe7mNATg/i7ijgeT+c+6QA2KstX6ajnubhCsoi/j/Vt8Zd/aXBoqsEwTm/\nPsa3ADpu1Ax0D+nCvkJoZDYCafOIkoP+UOsTYmqLfxfaFyEc2A7TaCChAoGBAMAY\nl2ca75zAR98O6fK2k7M3/6wGjw+Iv3kxysoNp7fyu3r/k5IlE+x1b/DBu9mkhECL\nY8pfU0KpmETap+JJKieLD8lvMvJYt0mONoXByw19Sgrt1n93EaNum/SEG3Mu1tF3\nD5Dnfxnp0VAkC0OdpN24gJKk+FKcO9BPuSBQdzUFAoGALULhmpbELBdeYyy40FO7\n0VzjuiAI49Cl11kVhw5YEKuzpjxxPeFWUbE2v/AWBMnlbH+S/PjPabqbcNX3Yotv\nhnDuTNVLV78d0phYuQhzLU9vOoBxkz+RJF6UaY5qxPmytjVR0iyoF51jIrW0ehy+\ngRbf/HMFKWwrsdvnuRNDveY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "gki-analisis@gkicinda.iam.gserviceaccount.com",
+  "client_id": "114491723930987181917",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gki-analisis%40gkicinda.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
