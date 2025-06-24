@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../api/supabase";
 import EditShalomModal from "./EditShalomModal";
-import ShalomForm from "./ShalomForm";
 
 type Shalom = {
   id: number;
@@ -97,18 +96,6 @@ const ShalomList = () => {
       )}
     </div>
   );
-
-  async function handleDelete(id: number) {
-    const confirm = window.confirm("Yakin ingin menghapus data ini?");
-    if (!confirm) return;
-
-    const { error } = await supabase.from("shalom").delete().eq("id", id);
-    if (error) {
-      alert(`Gagal menghapus: ${error.message}`);
-    } else {
-      setShalomList((prev) => prev.filter((item) => item.id !== id));
-    }
-  }
 };
 
 export default ShalomList;
