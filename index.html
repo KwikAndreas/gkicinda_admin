@@ -11,6 +11,19 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-T5G34WKN3H"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-T5G34WKN3H");
+  </script>
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
@@ -21,13 +34,21 @@
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-      apiKey: "AIzaSyDNsFpx8nUNPBJBkyplMxbVQFSlY7s_xS8",
-      authDomain: "gkicinda-admin.firebaseapp.com",
-      projectId: "gkicinda-admin",
-      storageBucket: "gkicinda-admin.firebasestorage.app",
-      messagingSenderId: "269378436934",
-      appId: "1:269378436934:web:d63bfd5f8ce313e0222f47",
-      measurementId: "G-P4LTJRBETB",
+      apiKey: "AIzaSyDEBliVE4Ais5-POHc0thfTnGkD9uM0tOU",
+      authDomain: "gkicinda-1a802.firebaseapp.com",
+      projectId: "gkicinda-1a802",
+      storageBucket: "gkicinda-1a802.firebasestorage.app",
+      messagingSenderId: "81574228067",
+      appId: "1:81574228067:web:7dd2db50a553aa73824856",
+      measurementId: "G-T5G34WKN3H",
+
+      // apiKey: "AIzaSyDNsFpx8nUNPBJBkyplMxbVQFSlY7s_xS8",
+      // authDomain: "gkicinda-admin.firebaseapp.com",
+      // projectId: "gkicinda-admin",
+      // storageBucket: "gkicinda-admin.firebasestorage.app",
+      // messagingSenderId: "269378436934",
+      // appId: "1:269378436934:web:d63bfd5f8ce313e0222f47",
+      // measurementId: "G-P4LTJRBETB",
     };
 
     // Initialize Firebase

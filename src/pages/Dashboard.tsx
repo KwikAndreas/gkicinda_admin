@@ -22,24 +22,45 @@ export default function Dashboard() {
     { date: string; value: number }[]
   >([]);
 
+  const [loading, setLoading] = useState(true); // State untuk loading
+  const [error, setError] = useState<string | null>(null); // State untuk error
+
   useEffect(() => {
-    axios
-      .get("./api/analytics?type=daily")
-      .then((res) => setDailyUsers(Number(res.data.users) || 0));
-    axios
-      .get("./api/analytics?type=weekly")
-      .then((res) => setWeeklyUsers(Number(res.data.users) || 0));
-    axios
-      .get("./api/analytics?type=monthly")
-      .then((res) => setMonthlyUsers(Number(res.data.users) || 0));
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null); // Reset error setiap kali fetch dimulai
+      try {
+        // Fetch Daily Users
+        const dailyRes = await axios.get("./api/analytics?type=daily");
+        setDailyUsers(Number(dailyRes.data.users) || 0);
 
-    axios
-      .get("./api/analytics?type=timeseries")
-      .then((res) => setUserActivity(res.data.data || []));
+        // Fetch Weekly Users
+        const weeklyRes = await axios.get("./api/analytics?type=weekly");
+        setWeeklyUsers(Number(weeklyRes.data.users) || 0);
 
-    axios
-      .get("./api/analytics?type=timeseries&metric=averageEngagementTimePerUser")
-      .then((res) => setAvgEngagement(res.data.data || []));
+        // Fetch Monthly Users
+        const monthlyRes = await axios.get("./api/analytics?type=monthly");
+        setMonthlyUsers(Number(monthlyRes.data.users) || 0);
+
+        // Fetch User Activity
+        const userActivityRes = await axios.get(
+          "./api/analytics?type=timeseries"
+        );
+        setUserActivity(userActivityRes.data.data || []);
+
+        const avgEngagementRes = await axios.get(
+          "./api/analytics?type=timeseries&metric=averageEngagementTimePerUser"
+        );
+        setAvgEngagement(avgEngagementRes.data.data || []);
+      } catch (err: any) {
+        console.error("Failed to fetch analytics data:", err);
+        setError(err.message || "Gagal memuat data analitik."); // Set pesan error
+      } finally {
+        setLoading(false); // Selesai loading
+      }
+    };
+
+    fetchData();
   }, []);
 
   const data = [
@@ -50,8 +71,38 @@ export default function Dashboard() {
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
-    return `${dateStr.slice(6, 8)}/${dateStr.slice(4, 6)}`;
+    if (dateStr.length === 8) {
+      return `${dateStr.slice(6, 8)}/${dateStr.slice(4, 6)}`;
+    }
+    return dateStr;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-6 flex justify-center items-center">
+        <p className="text-xl text-gray-700">Memuat data analitik...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-6 flex justify-center items-center">
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
+          <strong className="font-bold">Error!</strong>
+          <span className="block sm:inline"> {error}</span>
+          <p className="text-sm mt-2">
+            Pastikan server backend berjalan dan variabel lingkungan
+            GA_PROPERTY_ID serta GOOGLE_APPLICATION_CREDENTIALS telah diatur
+            dengan benar.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
