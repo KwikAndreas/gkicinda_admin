@@ -4,7 +4,6 @@ import fs from "fs"; // Digunakan untuk pemeriksaan kredensial
 
 let analyticsDataClient: BetaAnalyticsDataClient;
 
-// Periksa apakah kredensial JSON ada di variabel lingkungan
 if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
     try {
         const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
@@ -27,12 +26,6 @@ if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
     console.warn("[SERVER] GOOGLE_APPLICATION_CREDENTIALS_JSON not found. Relying on default credential lookup.");
 }
 
-// Inisialisasi client Google Analytics Data API.
-// Kredensial akan secara otomatis dicari dari variabel lingkungan GOOGLE_APPLICATION_CREDENTIALS
-// atau lingkungan runtime Google Cloud (misalnya, Google Cloud Functions, App Engine).
-
-// Ambil GA_PROPERTY_ID dari variabel lingkungan.
-// Penting: Pastikan ini diatur di .env.local atau di konfigurasi deployment Anda.
 const propertyId = process.env.GA_PROPERTY_ID;
 
 export default async function handler(

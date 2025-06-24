@@ -30,26 +30,23 @@ export default function Dashboard() {
       setLoading(true);
       setError(null); // Reset error setiap kali fetch dimulai
       try {
-        // Fetch Daily Users
-        const dailyRes = await axios.get("./api/analytics?type=daily");
+        // Ganti semua URL ke alamat backend Express
+        const baseUrl = "http://localhost:5173/api/analytics";
+
+        const dailyRes = await axios.get(`${baseUrl}?type=daily`);
         setDailyUsers(Number(dailyRes.data.users) || 0);
 
-        // Fetch Weekly Users
-        const weeklyRes = await axios.get("./api/analytics?type=weekly");
+        const weeklyRes = await axios.get(`${baseUrl}?type=weekly`);
         setWeeklyUsers(Number(weeklyRes.data.users) || 0);
 
-        // Fetch Monthly Users
-        const monthlyRes = await axios.get("./api/analytics?type=monthly");
+        const monthlyRes = await axios.get(`${baseUrl}?type=monthly`);
         setMonthlyUsers(Number(monthlyRes.data.users) || 0);
 
-        // Fetch User Activity
-        const userActivityRes = await axios.get(
-          "./api/analytics?type=timeseries"
-        );
+        const userActivityRes = await axios.get(`${baseUrl}?type=timeseries`);
         setUserActivity(userActivityRes.data.data || []);
 
         const avgEngagementRes = await axios.get(
-          "./api/analytics?type=timeseries&metric=averageEngagementTimePerUser"
+          `${baseUrl}?type=timeseries&metric=averageEngagementTimePerUser`
         );
         setAvgEngagement(avgEngagementRes.data.data || []);
       } catch (err: any) {
