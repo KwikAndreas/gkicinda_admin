@@ -22,7 +22,7 @@ export default function Dashboard() {
       setLoading(true);
       setError(null);
       try {
-        const baseUrl = "gkicinda-admin.vercel.app";
+        const baseUrl = "";
 
         const dailyRes = await axios.get(`${baseUrl}?type=daily`);
         setDailyUsers(Number(dailyRes.data.users) || 0);
