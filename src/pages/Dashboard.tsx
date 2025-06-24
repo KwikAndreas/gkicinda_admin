@@ -24,21 +24,21 @@ export default function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("/api/analytics?type=daily")
+      .get("./api/analytics?type=daily")
       .then((res) => setDailyUsers(Number(res.data.users) || 0));
     axios
-      .get("/api/analytics?type=weekly")
+      .get("./api/analytics?type=weekly")
       .then((res) => setWeeklyUsers(Number(res.data.users) || 0));
     axios
-      .get("/api/analytics?type=monthly")
+      .get("./api/analytics?type=monthly")
       .then((res) => setMonthlyUsers(Number(res.data.users) || 0));
 
     axios
-      .get("/api/analytics?type=timeseries")
+      .get("./api/analytics?type=timeseries")
       .then((res) => setUserActivity(res.data.data || []));
 
     axios
-      .get("/api/analytics?type=timeseries&metric=averageEngagementTimePerUser")
+      .get("./api/analytics?type=timeseries&metric=averageEngagementTimePerUser")
       .then((res) => setAvgEngagement(res.data.data || []));
   }, []);
 

@@ -12,17 +12,16 @@ export default async function handler(
   try {
     const { type, metric } = req.query;
 
-    // Log env dan cek file credential
     if (type === "daily") {
-      console.log("GA_PROPERTY_ID", process.env.GA_PROPERTY_ID);
+      console.log("GA_PROPERTY_ID", process.env.VITE_GA_PROPERTY_ID);
       console.log(
         "GOOGLE_APPLICATION_CREDENTIALS",
-        process.env.GOOGLE_APPLICATION_CREDENTIALS
+        process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS
       );
-      if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+      if (process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS) {
         console.log(
           "Credential file exists:",
-          fs.existsSync(process.env.GOOGLE_APPLICATION_CREDENTIALS)
+          fs.existsSync(process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS)
         );
       }
     }
