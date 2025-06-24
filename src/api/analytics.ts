@@ -9,7 +9,7 @@ const analyticsDataClient = new BetaAnalyticsDataClient();
 
 // Ambil GA_PROPERTY_ID dari variabel lingkungan.
 // Penting: Pastikan ini diatur di .env.local atau di konfigurasi deployment Anda.
-const propertyId = process.env.GA_PROPERTY_ID;
+const propertyId = process.env.VITE_GA_PROPERTY_ID;
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,7 +29,7 @@ export default async function handler(
   // Debugging kredensial saat pengembangan
   // Di produksi, pastikan GOOGLE_APPLICATION_CREDENTIALS disetel dan mengarah ke file JSON yang benar
   if (process.env.NODE_ENV === "development") {
-    const credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    const credentialsPath = process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS;
     if (credentialsPath) {
       console.log(
         `[DEBUG] GOOGLE_APPLICATION_CREDENTIALS path: ${credentialsPath}`
