@@ -8,7 +8,11 @@ const app = express();
 const port = 5173;
 
 // Tambahkan middleware CORS
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://gkicinda-admin.vercel.app"], // tambahkan domain frontend Anda
+  })
+);
 
 let analyticsDataClient;
 const propertyId = process.env.GA_PROPERTY_ID;
