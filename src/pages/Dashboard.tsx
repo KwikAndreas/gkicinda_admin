@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { Chart } from "react-google-charts";
 
 export default function Dashboard() {
   const [dailyUsers, setDailyUsers] = useState<number | null>(null);
@@ -22,16 +14,15 @@ export default function Dashboard() {
     { date: string; value: number }[]
   >([]);
 
-  const [loading, setLoading] = useState(true); // State untuk loading
-  const [error, setError] = useState<string | null>(null); // State untuk error
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      setError(null); // Reset error setiap kali fetch dimulai
+      setError(null);
       try {
-        // Ganti semua URL ke alamat backend Express
-        const baseUrl = "http://localhost:5173/api/analytics";
+        const baseUrl = "gkicinda-admin.vercel.app";
 
         const dailyRes = await axios.get(`${baseUrl}?type=daily`);
         setDailyUsers(Number(dailyRes.data.users) || 0);
@@ -51,28 +42,42 @@ export default function Dashboard() {
         setAvgEngagement(avgEngagementRes.data.data || []);
       } catch (err: any) {
         console.error("Failed to fetch analytics data:", err);
-        setError(err.message || "Gagal memuat data analitik."); // Set pesan error
+        setError(err.message || "Gagal memuat data analitik.");
       } finally {
-        setLoading(false); // Selesai loading
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  const data = [
-    { name: "Harian", Pengguna: dailyUsers ?? 0 },
-    { name: "Mingguan", Pengguna: weeklyUsers ?? 0 },
-    { name: "Bulanan", Pengguna: monthlyUsers ?? 0 },
+  // Data untuk Google Chart harus array 2 dimensi: [header, ...data]
+  const userActivityChartData = [
+    ["Tanggal", "Active Users"],
+    ...userActivity.map((d) => [
+      d.date.length === 8
+        ? `${d.date.slice(6, 8)}/${d.date.slice(4, 6)}`
+        : d.date,
+      Number(d.value) || 0, // pastikan number
+    ]),
   ];
 
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    if (dateStr.length === 8) {
-      return `${dateStr.slice(6, 8)}/${dateStr.slice(4, 6)}`;
-    }
-    return dateStr;
-  };
+  const avgEngagementChartData = [
+    ["Tanggal", "Avg Engagement (s)"],
+    ...avgEngagement.map((d) => [
+      d.date.length === 8
+        ? `${d.date.slice(6, 8)}/${d.date.slice(4, 6)}`
+        : d.date,
+      Number(d.value) ? Math.round(Number(d.value)) : 0, // pastikan number
+    ]),
+  ];
+
+  const summaryChartData = [
+    ["Periode", "Pengguna"],
+    ["Harian", dailyUsers ?? 0],
+    ["Mingguan", weeklyUsers ?? 0],
+    ["Bulanan", monthlyUsers ?? 0],
+  ];
 
   if (loading) {
     return (
@@ -107,94 +112,69 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">
           Statistik Website GKI Cipinang Indah
         </h1>
-        {/* Bento Layout */}
         <div className="flex flex-col md:flex-row gap-6 mb-8">
-          {/* User Activity - kiri */}
+          {/* User Activity */}
           <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col flex-1 md:basis-2/3">
             <h2 className="text-xl font-semibold mb-4 text-gray-700">
               User Activity (30 Hari Terakhir)
             </h2>
             <div className="flex-1 h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={userActivity.map((d) => ({
-                    ...d,
-                    date: formatDate(d.date),
-                  }))}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#8884d8"
-                    name="Active Users"
-                    activeDot={{ r: 6 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <Chart
+                width={"100%"}
+                height={"100%"}
+                chartType="LineChart"
+                loader={<div>Loading Chart...</div>}
+                data={userActivityChartData}
+                options={{
+                  legend: { position: "bottom" },
+                  hAxis: { title: "Tanggal" },
+                  vAxis: { title: "Active Users" },
+                  colors: ["#8884d8"],
+                }}
+              />
             </div>
           </div>
-          {/* Kanan: Engagement & Grafik Pengguna */}
+          {/* Engagement & Ringkasan */}
           <div className="flex flex-col gap-6 flex-1 md:basis-1/3">
-            {/* Engagement */}
             <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col flex-1">
               <h2 className="text-xl font-semibold mb-4 text-gray-700">
                 Average Engagement Time per Active User (detik)
               </h2>
               <div className="flex-1 h-32 md:h-40">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={avgEngagement.map((d) => ({
-                      ...d,
-                      date: formatDate(d.date),
-                      value: Math.round(d.value),
-                    }))}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="value"
-                      stroke="#82ca9d"
-                      name="Avg Engagement (s)"
-                      activeDot={{ r: 6 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                <Chart
+                  width={"100%"}
+                  height={"100%"}
+                  chartType="LineChart"
+                  loader={<div>Loading Chart...</div>}
+                  data={avgEngagementChartData}
+                  options={{
+                    legend: { position: "bottom" },
+                    hAxis: { title: "Tanggal" },
+                    vAxis: { title: "Avg Engagement (s)" },
+                    colors: ["#82ca9d"],
+                  }}
+                />
               </div>
             </div>
-            {/* Grafik Pengguna Ringkasan */}
             <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col flex-1">
               <h2 className="text-xl font-semibold mb-4 text-gray-700">
                 Grafik Pengguna
               </h2>
               <div className="flex-1 h-32 md:h-40">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={data}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="Pengguna"
-                      stroke="#8884d8"
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                <Chart
+                  width={"100%"}
+                  height={"100%"}
+                  chartType="ColumnChart"
+                  loader={<div>Loading Chart...</div>}
+                  data={summaryChartData}
+                  options={{
+                    legend: { position: "none" },
+                    hAxis: { title: "Periode" },
+                    vAxis: { title: "Pengguna" },
+                    colors: ["#8884d8"],
+                  }}
+                />
               </div>
-              {/* Ringkasan angka */}
               <div className="grid grid-cols-1 gap-2 mt-4">
                 <div className="flex justify-between text-gray-600">
                   <span>Harian</span>
