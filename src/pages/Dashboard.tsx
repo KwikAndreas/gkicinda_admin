@@ -25,7 +25,7 @@ export default function Dashboard() {
       try {
         // PASTIKAN INI ADALAH URL RELATIF UNTUK DEPLOYMENT VERCEL!
         // Jika masih 'http://localhost...', ubah menjadi '/api/analytics'
-        const baseUrl = "";
+        const baseUrl = "/api/analytics";
 
         console.log("Fetching daily users...");
         const dailyRes = await axios.get(`${baseUrl}?type=daily`);
