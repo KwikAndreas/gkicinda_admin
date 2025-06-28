@@ -25,7 +25,7 @@ export default function Dashboard() {
       try {
         // PASTIKAN INI ADALAH URL RELATIF UNTUK DEPLOYMENT VERCEL!
         // Jika masih 'http://localhost...', ubah menjadi '/api/analytics'
-        const baseUrl = "/api/analytics";
+        const baseUrl = "";
 
         console.log("Fetching daily users...");
         const dailyRes = await axios.get(`${baseUrl}?type=daily`);
@@ -114,20 +114,15 @@ export default function Dashboard() {
 
   // Debugging akhir sebelum render chart
   useEffect(() => {
-    console.log(
-      "Final userActivityChartData for Chart:",
-      userActivityChartData
-    );
-    console.log(
-      "Final avgEngagementChartData for Chart:",
-      avgEngagementChartData
-    );
+    console.log("Final userActivityChartData for Chart:", userActivityChartData);
+    console.log("Final avgEngagementChartData for Chart:", avgEngagementChartData);
     console.log("Final summaryChartData for Chart:", summaryChartData);
     // Anda bisa tambahkan validasi di sini, misalnya:
     // if (userActivityChartData.length > 1 && typeof userActivityChartData[1][1] !== 'number') {
     //    console.error("DEBUG: userActivityChartData has non-numeric value!", userActivityChartData[1][1]);
     // }
   }, [userActivityChartData, avgEngagementChartData, summaryChartData]);
+
 
   if (loading) {
     return (
@@ -184,9 +179,7 @@ export default function Dashboard() {
                   }}
                 />
               ) : (
-                <p className="text-center text-gray-500 mt-10">
-                  Tidak ada data aktivitas pengguna untuk ditampilkan.
-                </p>
+                <p className="text-center text-gray-500 mt-10">Tidak ada data aktivitas pengguna untuk ditampilkan.</p>
               )}
             </div>
           </div>
@@ -212,9 +205,7 @@ export default function Dashboard() {
                     }}
                   />
                 ) : (
-                  <p className="text-center text-gray-500 mt-5">
-                    Tidak ada data engagement untuk ditampilkan.
-                  </p>
+                  <p className="text-center text-gray-500 mt-5">Tidak ada data engagement untuk ditampilkan.</p>
                 )}
               </div>
             </div>
@@ -238,9 +229,7 @@ export default function Dashboard() {
                     }}
                   />
                 ) : (
-                  <p className="text-center text-gray-500 mt-5">
-                    Tidak ada data ringkasan pengguna.
-                  </p>
+                  <p className="text-center text-gray-500 mt-5">Tidak ada data ringkasan pengguna.</p>
                 )}
               </div>
               <div className="grid grid-cols-1 gap-2 mt-4">
