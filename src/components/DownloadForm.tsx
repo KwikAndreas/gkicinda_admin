@@ -43,10 +43,10 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ onUploadSuccess }) => {
       const fileName = `WARTA JEMAAT ${formattedDate.toUpperCase()}.pdf`;
       const filePath = `public/warta-jemaat/${fileName}`;
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from(bucketName)
         .upload(filePath, selectedFile, {
-          upsert: true, // Ini akan menimpa file jika sudah ada
+          upsert: true,
           contentType: 'application/pdf',
         });
 

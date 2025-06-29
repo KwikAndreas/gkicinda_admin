@@ -15,7 +15,7 @@ export default function App() {
         <CMSManager />
 
         {/* Statistik Google Analytics */}
-        <Dashboard />
+        {/* <Dashboard /> */}
       </div>
     </main>
   );
