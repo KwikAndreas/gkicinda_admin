@@ -1,4 +1,3 @@
-import Dashboard from "./pages/Dashboard";
 import CMSManager from "./pages/CMSPage";
 
 export default function App() {

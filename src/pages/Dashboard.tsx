@@ -184,12 +184,12 @@ export default function Dashboard() {
     ]),
   ];
 
-  const summaryChartData = [
-    ["Periode", "Pengguna"],
-    ["Harian", dailyUsers ?? 0],
-    ["Mingguan", weeklyUsers ?? 0],
-    ["Bulanan", monthlyUsers ?? 0],
-  ];
+  // const summaryChartData = [
+  //   ["Periode", "Pengguna"],
+  //   ["Harian", dailyUsers ?? 0],
+  //   ["Mingguan", weeklyUsers ?? 0],
+  //   ["Bulanan", monthlyUsers ?? 0],
+  // ];
 
   // Grafik Active Users 30 hari (untuk hero chart)
   const activeUsers30dChartData = [
