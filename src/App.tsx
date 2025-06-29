@@ -11,12 +11,11 @@ export default function App() {
         <p className="text-center text-gray-500 mb-10">
           Pantau statistik dan kelola konten website dengan mudah.
         </p>
+        {/* CMS */}
+        <CMSManager />
 
         {/* Statistik Google Analytics */}
         <Dashboard />
-
-        {/* CMS */}
-        <CMSManager />
       </div>
     </main>
   );

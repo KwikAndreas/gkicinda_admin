@@ -5,25 +5,34 @@ import fs from "fs"; // Digunakan untuk pemeriksaan kredensial
 let analyticsDataClient: BetaAnalyticsDataClient;
 
 if (process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON) {
-    try {
-        const credentials = JSON.parse(process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON);
-        analyticsDataClient = new BetaAnalyticsDataClient({
-            credentials: {
-                client_email: credentials.client_email,
-                private_key: credentials.private_key,
-            },
-        });
-        console.log("[SERVER] Google Analytics Client initialized from JSON environment variable.");
-    } catch (e) {
-        console.error("[SERVER] Error parsing GOOGLE_APPLICATION_CREDENTIALS_JSON:", e);
-        // Fallback ke inisialisasi default jika parsing gagal
-        analyticsDataClient = new BetaAnalyticsDataClient();
-    }
-} else {
-    // Jika GOOGLE_APPLICATION_CREDENTIALS_JSON tidak disetel, biarkan SDK mencari
-    // GOOGLE_APPLICATION_CREDENTIALS (path) atau kredensial default GCE/Cloud Run
+  try {
+    const credentials = JSON.parse(
+      process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON
+    );
+    analyticsDataClient = new BetaAnalyticsDataClient({
+      credentials: {
+        client_email: credentials.client_email,
+        private_key: credentials.private_key,
+      },
+    });
+    console.log(
+      "[SERVER] Google Analytics Client initialized from JSON environment variable."
+    );
+  } catch (e) {
+    console.error(
+      "[SERVER] Error parsing GOOGLE_APPLICATION_CREDENTIALS_JSON:",
+      e
+    );
+    // Fallback ke inisialisasi default jika parsing gagal
     analyticsDataClient = new BetaAnalyticsDataClient();
-    console.warn("[SERVER] GOOGLE_APPLICATION_CREDENTIALS_JSON not found. Relying on default credential lookup.");
+  }
+} else {
+  // Jika GOOGLE_APPLICATION_CREDENTIALS_JSON tidak disetel, biarkan SDK mencari
+  // GOOGLE_APPLICATION_CREDENTIALS (path) atau kredensial default GCE/Cloud Run
+  analyticsDataClient = new BetaAnalyticsDataClient();
+  console.warn(
+    "[SERVER] GOOGLE_APPLICATION_CREDENTIALS_JSON not found. Relying on default credential lookup."
+  );
 }
 
 const propertyId = process.env.VITE_GA_PROPERTY_ID;
@@ -32,21 +41,21 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  res.setHeader("Content-Type", "application/json");
   // --- Validasi Awal ---
   if (!propertyId) {
     console.error("Error: GA_PROPERTY_ID environment variable is not set.");
-    return res
-      .status(500)
-      .json({
-        error:
-          "Server configuration error: Google Analytics Property ID is missing.",
-      });
+    return res.status(500).json({
+      error:
+        "Server configuration error: Google Analytics Property ID is missing.",
+    });
   }
 
   // Debugging kredensial saat pengembangan
   // Di produksi, pastikan GOOGLE_APPLICATION_CREDENTIALS disetel dan mengarah ke file JSON yang benar
   if (process.env.NODE_ENV === "development") {
-    const credentialsPath = process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON;
+    const credentialsPath =
+      process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON;
     if (credentialsPath) {
       console.log(
         `[DEBUG] GOOGLE_APPLICATION_CREDENTIALS path: ${credentialsPath}`
@@ -80,45 +89,101 @@ export default async function handler(
   // --- Akhir Validasi Awal ---
 
   try {
-    const { type, metric } = req.query;
+    const { type, metric, period } = req.query;
 
     let dateRange;
-    let dimension = null; // Default to null, only set if timeseries
-    let metricName = "activeUsers"; // Default metric
+    let dimension = null;
+    let metricNames: string[] = ["activeUsers"];
+
+    // Tambahan untuk last 30 minutes
+    if (type === "last30minutes") {
+      const now = new Date();
+      const endDate = now.toISOString().slice(0, 10);
+      dateRange = { startDate: endDate, endDate: endDate };
+      dimension = "minute";
+      metricNames = ["activeUsers"];
+      let request: any = {
+        property: `properties/${propertyId}`,
+        dateRanges: [dateRange],
+        metrics: metricNames.map((name) => ({ name })),
+        dimensions: [{ name: dimension }],
+        limit: 60,
+        orderBys: [{ desc: true, dimension: { dimensionName: "minute" } }],
+      };
+      const [response] = await analyticsDataClient.runReport(request);
+      let rows = response.rows || [];
+      // period=prev: ambil menit ke 31-60, else: 1-30
+      let data = [];
+      if (period === "prev") {
+        data = rows
+          .slice(30, 60)
+          .reverse()
+          .map((row) => ({
+            minute: row.dimensionValues?.[0]?.value || "",
+            activeUsers: Number(row.metricValues?.[0]?.value) || 0,
+          }));
+      } else {
+        data = rows
+          .slice(0, 30)
+          .reverse()
+          .map((row) => ({
+            minute: row.dimensionValues?.[0]?.value || "",
+            activeUsers: Number(row.metricValues?.[0]?.value) || 0,
+          }));
+      }
+      return res.status(200).json({ data });
+    }
 
     switch (type) {
       case "daily":
-        dateRange = { startDate: "1daysAgo", endDate: "today" };
+        if (period === "prev") {
+          // Kemarin
+          dateRange = { startDate: "2daysAgo", endDate: "1daysAgo" };
+        } else {
+          dateRange = { startDate: "1daysAgo", endDate: "today" };
+        }
         break;
       case "weekly":
-        dateRange = { startDate: "7daysAgo", endDate: "today" };
+        if (period === "prev") {
+          // 7 hari sebelum 7 hari terakhir
+          dateRange = { startDate: "14daysAgo", endDate: "7daysAgo" };
+        } else {
+          dateRange = { startDate: "7daysAgo", endDate: "today" };
+        }
         break;
       case "monthly":
-        dateRange = { startDate: "30daysAgo", endDate: "today" };
+        if (period === "prev") {
+          // 30 hari sebelum 30 hari terakhir
+          dateRange = { startDate: "60daysAgo", endDate: "30daysAgo" };
+        } else {
+          dateRange = { startDate: "30daysAgo", endDate: "today" };
+        }
         break;
       case "timeseries":
-        dateRange = { startDate: "30daysAgo", endDate: "today" };
-        dimension = "date"; // Add date dimension for timeseries
+        if (period === "prev") {
+          // 30 hari sebelum 30 hari terakhir
+          dateRange = { startDate: "60daysAgo", endDate: "30daysAgo" };
+        } else {
+          dateRange = { startDate: "30daysAgo", endDate: "today" };
+        }
+        dimension = "date";
+        metricNames = ["activeUsers", "averageEngagementTimePerUser"];
         break;
       default:
-        return res
-          .status(400)
-          .json({
-            error:
-              "Invalid 'type' parameter. Expected 'daily', 'weekly', 'monthly', or 'timeseries'.",
-          });
+        return res.status(400).json({
+          error:
+            "Invalid 'type' parameter. Expected 'daily', 'weekly', 'monthly', 'timeseries', or 'last30minutes'.",
+        });
     }
 
-    // Pilih metrik berdasarkan parameter 'metric'
-    if (metric === "averageEngagementTimePerUser") {
-      metricName = "averageEngagementTimePerUser";
+    if (type !== "timeseries" && metric === "averageEngagementTimePerUser") {
+      metricNames = ["averageEngagementTimePerUser"];
     }
 
-    // Bangun permintaan untuk Google Analytics Data API
     const request: any = {
-      property: `properties/${propertyId}`, // Format yang benar untuk properti
+      property: `properties/${propertyId}`,
       dateRanges: [dateRange],
-      metrics: [{ name: metricName }],
+      metrics: metricNames.map((name) => ({ name })),
     };
 
     if (dimension) {
@@ -135,10 +200,6 @@ export default async function handler(
 
     // Periksa apakah ada baris data yang valid
     if (!response || !response.rows || response.rows.length === 0) {
-      console.warn(
-        `No data found for type: ${type}, metric: ${metricName}, property: ${propertyId}`
-      );
-      // Kembalikan respons kosong atau nol jika tidak ada data
       if (type === "timeseries") {
         return res.status(200).json({ data: [] });
       }
@@ -146,16 +207,16 @@ export default async function handler(
     }
 
     if (type === "timeseries") {
+      // Kembalikan array data dengan dua metrik: activeUsers dan averageEngagementTimePerUser
       const data = response.rows.map((row) => ({
-        // Pastikan dimensionValues dan metricValues ada sebelum mengaksesnya
         date: row.dimensionValues?.[0]?.value || "Unknown Date",
-        value: Number(row.metricValues?.[0]?.value) || 0,
+        activeUsers: Number(row.metricValues?.[0]?.value) || 0,
+        averageEngagementTimePerUser: Number(row.metricValues?.[1]?.value) || 0,
       }));
       return res.status(200).json({ data });
     }
 
     // Untuk daily, weekly, monthly (aggregate metrics)
-    // Pastikan struktur respons ada sebelum mengaksesnya
     const users = Number(response.rows[0].metricValues?.[0]?.value) || 0;
     return res.status(200).json({ users });
   } catch (error: any) {
