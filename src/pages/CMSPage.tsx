@@ -29,7 +29,7 @@ export default function CMSPage() {
               className={`px-3 sm:px-4 py-2 -mb-px border-b-2 font-medium transition-colors whitespace-nowrap focus:outline-none ${
                 activeTab === tab.key
                   ? "border-blue-600 text-blue-700 bg-blue-50"
-                  : "border-transparent text-gray-500 hover:text-blue-600 hover:bg-gray-100"
+                  : "border-transparent text-gray-500"
               }`}
               onClick={() => setActiveTab(tab.key)}
               type="button"
