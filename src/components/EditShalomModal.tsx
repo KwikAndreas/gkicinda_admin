@@ -15,11 +15,7 @@ type EditShalomModalProps = {
   onUpdated: () => void;
 };
 
-const kategoriOptions = [
-  "Renungan",
-  "Bacaan",
-  "Pokok_doa",
-] as const;
+const kategoriOptions = ["Renungan", "Bacaan", "Pokok_doa"] as const;
 
 export default function EditShalomModal({
   isOpen,
@@ -34,7 +30,9 @@ export default function EditShalomModal({
     setForm({ ...shalom });
   }, [shalom]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -59,8 +57,8 @@ export default function EditShalomModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-40 bg-black/40 flex items-center justify-center">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 relative">
+    <div className="fixed inset-0 z-40 bg-black/40 flex items-center justify-center px-2">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-4 sm:p-6 relative">
         <h2 className="text-xl font-semibold mb-4">Edit Shalom</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>

@@ -84,7 +84,7 @@ export default function InformasiForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 p-4 bg-white rounded-xl shadow"
+      className="space-y-4 p-2 sm:p-4 bg-white rounded-xl shadow"
     >
       <h2 className="text-lg font-semibold">Tambah Informasi</h2>
       <select

@@ -1,4 +1,3 @@
-// Dashboard.tsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Chart } from "react-google-charts";
@@ -21,7 +20,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Tambahan state untuk growth/trend
   const [dailyPrev, setDailyPrev] = useState<number | null>(null);
   const [weeklyPrev, setWeeklyPrev] = useState<number | null>(null);
   const [monthlyPrev, setMonthlyPrev] = useState<number | null>(null);
@@ -40,23 +38,22 @@ export default function Dashboard() {
           headers: { "Cache-Control": "no-cache" },
         });
         console.log("Daily Users Raw Response:", dailyRes.data);
-        setDailyUsers(Number(dailyRes.data.users) || 0); // Konversi eksplisit ke Number, default 0
+        setDailyUsers(Number(dailyRes.data.users) || 0);
 
         console.log("Fetching weekly users...");
         const weeklyRes = await axios.get(`${baseUrl}?type=weekly`, {
           headers: { "Cache-Control": "no-cache" },
         });
         console.log("Weekly Users Raw Response:", weeklyRes.data);
-        setWeeklyUsers(Number(weeklyRes.data.users) || 0); // Konversi eksplisit ke Number, default 0
+        setWeeklyUsers(Number(weeklyRes.data.users) || 0);
 
         console.log("Fetching monthly users...");
         const monthlyRes = await axios.get(`${baseUrl}?type=monthly`, {
           headers: { "Cache-Control": "no-cache" },
         });
         console.log("Monthly Users Raw Response:", monthlyRes.data);
-        setMonthlyUsers(Number(monthlyRes.data.users) || 0); // Konversi eksplisit ke Number, default 0
+        setMonthlyUsers(Number(monthlyRes.data.users) || 0);
 
-        // Fetch last 30 minutes active users
         console.log("Fetching active users in last 30 minutes...");
         const last30MinRes = await axios.get(`${baseUrl}?type=last30minutes`, {
           headers: { "Cache-Control": "no-cache" },
@@ -71,7 +68,6 @@ export default function Dashboard() {
         });
         console.log("Timeseries Raw Response:", timeseriesRes.data);
 
-        // Pisahkan data menjadi dua array: userActivity dan avgEngagement
         const timeseriesData: {
           date: string;
           activeUsers: any;
@@ -92,28 +88,24 @@ export default function Dashboard() {
         }));
         setAvgEngagement(processedAvgEngagement);
 
-        // Fetch previous day users
         const dailyPrevRes = await axios.get(
           `${baseUrl}?type=daily&period=prev`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         setDailyPrev(Number(dailyPrevRes.data.users) || 0);
 
-        // Fetch previous week users
         const weeklyPrevRes = await axios.get(
           `${baseUrl}?type=weekly&period=prev`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         setWeeklyPrev(Number(weeklyPrevRes.data.users) || 0);
 
-        // Fetch previous month users
         const monthlyPrevRes = await axios.get(
           `${baseUrl}?type=monthly&period=prev`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         setMonthlyPrev(Number(monthlyPrevRes.data.users) || 0);
 
-        // Fetch previous average engagement (ambil 30 hari sebelum 30 hari terakhir)
         const engagementPrevRes = await axios.get(
           `${baseUrl}?type=timeseries&period=prev`,
           { headers: { "Cache-Control": "no-cache" } }
@@ -134,7 +126,6 @@ export default function Dashboard() {
             : 0
         );
 
-        // Fetch previous 30min active users (ambil 31-60 menit lalu)
         const last30MinPrevRes = await axios.get(
           `${baseUrl}?type=last30minutes&period=prev`,
           { headers: { "Cache-Control": "no-cache" } }
@@ -161,15 +152,13 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // Data untuk Google Chart harus array 2 dimensi: [header, ...data]
   const userActivityChartData = [
     ["Tanggal", "Active Users"],
     ...userActivity.map((d) => [
-      // Pastikan format tanggal sesuai kebutuhan Anda (misal: "DD/MM")
-      d.date.length === 8 // Format YYYYMMDD
+      d.date.length === 8
         ? `${d.date.slice(6, 8)}/${d.date.slice(4, 6)}`
-        : d.date, // Untuk format lain yang mungkin sudah benar
-      d.value, // d.value sudah Number karena diproses di useEffect
+        : d.date,
+      d.value,
     ]),
   ];
 
@@ -180,7 +169,7 @@ export default function Dashboard() {
       d.date.length === 8
         ? `${d.date.slice(6, 8)}/${d.date.slice(4, 6)}`
         : d.date,
-      d.value, // d.value sudah Number karena diproses di useEffect
+      d.value,
     ]),
   ];
 
@@ -202,7 +191,6 @@ export default function Dashboard() {
     ]),
   ];
 
-  // Grafik Engagement 30 hari
   const engagement30dChartData = [
     ["Tanggal", "Avg Engagement (s)"],
     ...avgEngagement.map((d) => [
@@ -315,14 +303,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-2 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">
+        <h1 className="text-3xl font-bold mb-6 sm:mb-8 text-gray-800 text-center">
           Analytics Dashboard
         </h1>
         {/* Hero Active Users Chart */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
               <h2 className="text-xl font-semibold text-gray-700 mb-2">
                 Active Users (30 Hari Terakhir)
@@ -346,7 +334,7 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
-            <div className="w-full md:w-2/3 h-40">
+            <div className="w-full md:w-2/3 h-40 min-w-0">
               {activeUsers30dChartData.length > 1 ? (
                 <Chart
                   width={"100%"}
@@ -375,7 +363,7 @@ export default function Dashboard() {
           </div>
         </div>
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* 1 Day */}
           <div className="bg-white rounded-2xl shadow p-6 flex flex-col items-center">
             <span className="text-gray-500 text-xs mb-1">
@@ -459,7 +447,7 @@ export default function Dashboard() {
           </div>
         </div>
         {/* Engagement Chart */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
           <h2 className="text-xl font-semibold text-gray-700 mb-2">
             Average Engagement Time per Active User (30 Hari)
           </h2>
@@ -486,9 +474,9 @@ export default function Dashboard() {
           </div>
         </div>
         {/* Grafik utama */}
-        <div className="flex flex-col md:flex-row gap-6 mb-8">
+        <div className="flex flex-col md:flex-row gap-4 sm:gap-6 mb-8">
           {/* User Activity */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col flex-1 md:basis-2/3">
+          <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 flex flex-col flex-1 md:basis-2/3 mb-4 md:mb-0">
             <h2 className="text-xl font-semibold mb-4 text-gray-700">
               User Activity (30 Hari Terakhir)
             </h2>
@@ -515,7 +503,7 @@ export default function Dashboard() {
             </div>
           </div>
           {/* Engagement */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col flex-1 md:basis-1/3">
+          <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 flex flex-col flex-1 md:basis-1/3">
             <h2 className="text-xl font-semibold mb-4 text-gray-700">
               Average Engagement Time per Active User (detik)
             </h2>

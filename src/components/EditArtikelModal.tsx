@@ -19,7 +19,9 @@ export default function EditArtikelModal({
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -37,7 +39,8 @@ export default function EditArtikelModal({
       return artikel.media_url;
     }
 
-    const url = supabase.storage.from("artikel-media").getPublicUrl(fileName).data.publicUrl;
+    const url = supabase.storage.from("artikel-media").getPublicUrl(fileName)
+      .data.publicUrl;
     return url;
   };
 
@@ -61,10 +64,10 @@ export default function EditArtikelModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 px-2">
       <form
         onSubmit={handleSubmit}
-        className="bg-white w-full max-w-xl p-6 rounded-xl space-y-4"
+        className="bg-white w-full max-w-xl p-4 sm:p-6 rounded-xl space-y-4"
       >
         <h2 className="text-xl font-semibold">Edit Artikel</h2>
         <input
