@@ -119,3 +119,14 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ onUploadSuccess }) => {
     </div>
   );
 };
+
+export default DownloadForm;
+
+/*
+
+Tidak ada perubahan kode di sini, pastikan komponen ini diimport dan digunakan di file lain.
+Jika ingin menghilangkan warning, gunakan DownloadForm di salah satu halaman, misal:
+import DownloadForm from "../components/DownloadForm";
+<DownloadForm onUploadSuccess={...} />
+
+*/
