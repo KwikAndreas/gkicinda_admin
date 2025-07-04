@@ -64,7 +64,7 @@ export default function EditArtikelModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 px-2">
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 px-2">
       <form
         onSubmit={handleSubmit}
         className="bg-white w-full max-w-xl p-4 sm:p-6 rounded-xl space-y-4"

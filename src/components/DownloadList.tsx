@@ -43,7 +43,7 @@ const DownloadList: React.FC<DownloadListProps> = ({ refreshTrigger }) => {
         // 2. Ambil daftar file dari folder 'public/warta-jemaat/'
         const { data: listData, error: listError } = await supabase.storage
           .from(BUCKET_NAME)
-          .list("warta-jemaat/");
+          .list("public/warta-jemaat/");
 
         if (listError) {
           throw listError;
