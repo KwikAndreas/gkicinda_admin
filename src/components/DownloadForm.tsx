@@ -11,7 +11,6 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ onUploadSuccess }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -34,7 +33,6 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ onUploadSuccess }) => {
     }
 
     setUploading(true);
-    setUploadProgress(0);
     setMessage("Mengunggah file...");
 
     try {
@@ -46,33 +44,13 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ onUploadSuccess }) => {
       const fileName = `WARTA JEMAAT ${formattedDate.toUpperCase()}.pdf`;
       const filePath = `public/warta-jemaat/${fileName}`;
 
-      // Upload dengan progress menggunakan XMLHttpRequest
-      const { error } = await new Promise<{ error: any }>((resolve) => {
-        // Dapatkan signed URL untuk upload (Supabase SDK tidak menyediakan, jadi hanya bisa jika bucket public)
-        const url = `${supabase.storage
-          .from(bucketName)
-          .getPublicUrl("")
-          .data.publicUrl.replace(/\/$/, "")}/${filePath}`;
-        const xhr = new XMLHttpRequest();
-        xhr.open("PUT", url, true);
-        xhr.setRequestHeader("Content-Type", "application/pdf");
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            setUploadProgress(Math.round((event.loaded / event.total) * 100));
-          }
-        };
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve({ error: null });
-          } else {
-            resolve({ error: { message: xhr.statusText } });
-          }
-        };
-        xhr.onerror = () => {
-          resolve({ error: { message: "Upload gagal" } });
-        };
-        xhr.send(selectedFile);
-      });
+      // Upload menggunakan Supabase SDK (reliable)
+      const { error } = await supabase.storage
+        .from(bucketName)
+        .upload(filePath, selectedFile, {
+          upsert: true,
+          contentType: "application/pdf",
+        });
 
       if (error) {
         throw error;
@@ -80,14 +58,12 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ onUploadSuccess }) => {
 
       setMessage("File Warta Jemaat berhasil diperbarui!");
       setSelectedFile(null);
-      setUploadProgress(0);
       if (onUploadSuccess) {
         onUploadSuccess();
       }
     } catch (error: any) {
       console.error("Error saat mengunggah:", error.message);
-      setMessage(`Gagal mengunggah file: ${error.message}`);
-      setUploadProgress(0);
+      setMessage(`Gagal mengunggah file: ${error.message || "Unknown error"}`);
     } finally {
       setUploading(false);
     }
@@ -96,19 +72,19 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ onUploadSuccess }) => {
   return (
     <div className="border border-gray-300 p-4 rounded-lg mb-4 bg-white flex flex-col gap-2">
       <h3 className="font-semibold mb-2">Unggah Warta Jemaat Baru</h3>
-      {/* Progress bar upload dengan persentase */}
+      {/* Spinner upload */}
       {uploading && (
         <div className="mb-2 p-3 bg-blue-50 border border-blue-200 rounded shadow flex flex-col items-center w-full max-w-xs">
           <div className="relative w-full h-6 bg-blue-100 rounded mb-2 overflow-hidden">
             <div
               className="absolute left-0 top-0 h-full bg-blue-600 transition-all duration-200"
-              style={{ width: `${uploadProgress}%` }}
+              style={{ width: `100%` }}
             ></div>
             <span
               className="absolute w-full text-center text-white font-semibold text-sm z-10 drop-shadow"
               style={{ lineHeight: "1.5rem" }}
             >
-              {uploadProgress}%
+              Loading...
             </span>
           </div>
           <span className="text-blue-700 font-medium">Mengunggah file...</span>
@@ -143,5 +119,3 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ onUploadSuccess }) => {
     </div>
   );
 };
-
-export default DownloadForm;
