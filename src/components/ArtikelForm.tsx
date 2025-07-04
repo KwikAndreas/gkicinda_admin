@@ -11,7 +11,9 @@ export default function ArtikelForm({ onSuccess }: { onSuccess: () => void }) {
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -29,15 +31,22 @@ export default function ArtikelForm({ onSuccess }: { onSuccess: () => void }) {
       return null;
     }
 
-    const url = supabase.storage.from("media-artikel").getPublicUrl(fileName).data.publicUrl;
-    return url;
+    // Ambil public URL dari file yang diupload
+    const { data } = supabase.storage
+      .from("media-artikel")
+      .getPublicUrl(fileName);
+
+    return data.publicUrl || null;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const media_url = await handleUpload();
+    let media_url = null;
+    if (mediaFile) {
+      media_url = await handleUpload();
+    }
 
     const { error } = await supabase.from("artikel").insert({
       ...form,
@@ -55,7 +64,10 @@ export default function ArtikelForm({ onSuccess }: { onSuccess: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded-xl shadow">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 p-4 bg-white rounded-xl shadow"
+    >
       <h2 className="text-lg font-semibold">Tambah Artikel</h2>
       <input
         name="judul"

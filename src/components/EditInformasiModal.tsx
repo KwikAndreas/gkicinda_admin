@@ -38,15 +38,17 @@ export default function EditInformasiModal({
   const handleUpload = async () => {
     if (!mediaFile) return data.media_url;
     const fileExt = mediaFile.name.split(".").pop();
+    const kategori = form.kategori; // "berita" atau "kegiatan"
     const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `${kategori}/${fileName}`;
     const { error } = await supabase.storage
       .from("media-informasi")
-      .upload(fileName, mediaFile, { upsert: true });
+      .upload(filePath, mediaFile, { upsert: true });
     if (error) {
       alert("Upload gagal: " + error.message);
       return data.media_url;
     }
-    const url = supabase.storage.from("media-informasi").getPublicUrl(fileName)
+    const url = supabase.storage.from("media-informasi").getPublicUrl(filePath)
       .data.publicUrl;
     return url;
   };

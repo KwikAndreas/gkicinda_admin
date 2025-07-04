@@ -34,15 +34,17 @@ export default function InformasiForm({
   const handleUpload = async () => {
     if (!mediaFile) return null;
     const fileExt = mediaFile.name.split(".").pop();
+    const kategori = form.kategori; // "berita" atau "kegiatan"
     const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `${kategori}/${fileName}`;
     const { error } = await supabase.storage
       .from("media-informasi")
-      .upload(fileName, mediaFile);
+      .upload(filePath, mediaFile);
     if (error) {
       alert("Upload gagal: " + error.message);
       return null;
     }
-    const url = supabase.storage.from("media-informasi").getPublicUrl(fileName)
+    const url = supabase.storage.from("media-informasi").getPublicUrl(filePath)
       .data.publicUrl;
     return url;
   };
