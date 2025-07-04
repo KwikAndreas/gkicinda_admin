@@ -19,11 +19,6 @@ class ErrorBoundary extends React.Component<{
     return { error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Bisa log error ke service eksternal di sini jika perlu
-    // console.error(error, errorInfo);
-  }
-
   render() {
     if (this.state.error) {
       return (
