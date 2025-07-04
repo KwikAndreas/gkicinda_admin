@@ -13,11 +13,11 @@ export default function Home() {
           Pantau statistik dan kelola konten website dengan mudah.
         </p>
 
-        {/* Statistik Google Analytics */}
-        <Dashboard />
-
         {/* CMS */}
         <CMSManager />
+
+        {/* Statistik Google Analytics */}
+        <Dashboard />
       </div>
     </main>
   );
