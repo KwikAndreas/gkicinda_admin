@@ -76,6 +76,7 @@ export default function EditArtikelModal({
           value={form.judul}
           onChange={handleChange}
           className="w-full border p-2 rounded"
+          maxLength={100}
         />
         <input
           name="penulis"
@@ -83,6 +84,7 @@ export default function EditArtikelModal({
           value={form.penulis}
           onChange={handleChange}
           className="w-full border p-2 rounded"
+          maxLength={50}
         />
         <textarea
           name="ringkasan"
@@ -90,6 +92,7 @@ export default function EditArtikelModal({
           value={form.ringkasan}
           onChange={handleChange}
           className="w-full border p-2 rounded"
+          maxLength={300}
         />
         <textarea
           name="isi"
@@ -97,6 +100,7 @@ export default function EditArtikelModal({
           value={form.isi}
           onChange={handleChange}
           className="w-full border p-2 rounded h-40"
+          maxLength={5000}
         />
         <input
           type="file"

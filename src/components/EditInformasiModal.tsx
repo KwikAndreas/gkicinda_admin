@@ -127,6 +127,7 @@ export default function EditInformasiModal({
           value={form.judul}
           onChange={handleChange}
           className="w-full border p-2 rounded"
+          maxLength={100}
         />
         <textarea
           name="deskripsi"
@@ -134,6 +135,7 @@ export default function EditInformasiModal({
           value={form.deskripsi}
           onChange={handleChange}
           className="w-full border p-2 rounded"
+          maxLength={500}
         />
         {form.kategori === "kegiatan" && (
           <div>
