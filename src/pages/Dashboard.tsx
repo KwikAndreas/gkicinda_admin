@@ -140,7 +140,6 @@ export default function Dashboard() {
       } catch (err: any) {
         console.error("Failed to fetch analytics data:", err);
         setError(err.message || "Gagal memuat data analitik.");
-        // Log respons error dari server jika ada
         if (err.response) {
           console.error("Server Error Response:", err.response.data);
         }
@@ -173,14 +172,6 @@ export default function Dashboard() {
     ]),
   ];
 
-  // const summaryChartData = [
-  //   ["Periode", "Pengguna"],
-  //   ["Harian", dailyUsers ?? 0],
-  //   ["Mingguan", weeklyUsers ?? 0],
-  //   ["Bulanan", monthlyUsers ?? 0],
-  // ];
-
-  // Grafik Active Users 30 hari (untuk hero chart)
   const activeUsers30dChartData = [
     ["Tanggal", "Active Users"],
     ...userActivity.map((d) => [
@@ -201,7 +192,6 @@ export default function Dashboard() {
     ]),
   ];
 
-  // Grafik mini 30 menit
   const last30MinChartData = [
     ["Menit", "Active Users"],
     ...last30Min.map((d, idx) => [
@@ -210,7 +200,6 @@ export default function Dashboard() {
     ]),
   ];
 
-  // Utility untuk badge tren
   function TrendBadge({ trend }: { trend: ReturnType<typeof getTrend> }) {
     if (trend.percent === null) return null;
     return (

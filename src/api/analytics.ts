@@ -39,7 +39,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   res.setHeader("Content-Type", "application/json");
-  // --- Validasi Awal ---
   if (!propertyId) {
     console.error("Error: GA_PROPERTY_ID environment variable is not set.");
     return res.status(500).json({
@@ -48,8 +47,6 @@ export default async function handler(
     });
   }
 
-  // Debugging kredensial saat pengembangan
-  // Di produksi, pastikan GOOGLE_APPLICATION_CREDENTIALS disetel dan mengarah ke file JSON yang benar
   if (process.env.NODE_ENV === "development") {
     const credentialsPath =
       process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -65,7 +62,6 @@ export default async function handler(
             `[DEBUG] Error: Credential file not found at ${credentialsPath}`
           );
         } else {
-          // Coba baca file untuk memastikan bisa diakses
           const fileContent = fs.readFileSync(credentialsPath, "utf8");
           const parsedCredentials = JSON.parse(fileContent);
           console.log(
@@ -83,7 +79,6 @@ export default async function handler(
       );
     }
   }
-  // --- Akhir Validasi Awal ---
 
   try {
     const { type, metric, period } = req.query;
@@ -92,7 +87,6 @@ export default async function handler(
     let dimension = null;
     let metricNames: string[] = ["activeUsers"];
 
-    // Tambahan untuk last 30 minutes
     if (type === "last30minutes") {
       const now = new Date();
       const endDate = now.toISOString().slice(0, 10);
@@ -109,7 +103,6 @@ export default async function handler(
       };
       const [response] = await analyticsDataClient.runReport(request);
       let rows = response.rows || [];
-      // period=prev: ambil menit ke 31-60, else: 1-30
       let data = [];
       if (period === "prev") {
         data = rows
@@ -142,7 +135,6 @@ export default async function handler(
         break;
       case "weekly":
         if (period === "prev") {
-          // 7 hari sebelum 7 hari terakhir
           dateRange = { startDate: "14daysAgo", endDate: "7daysAgo" };
         } else {
           dateRange = { startDate: "7daysAgo", endDate: "today" };
@@ -150,7 +142,6 @@ export default async function handler(
         break;
       case "monthly":
         if (period === "prev") {
-          // 30 hari sebelum 30 hari terakhir
           dateRange = { startDate: "60daysAgo", endDate: "30daysAgo" };
         } else {
           dateRange = { startDate: "30daysAgo", endDate: "today" };
@@ -158,7 +149,6 @@ export default async function handler(
         break;
       case "timeseries":
         if (period === "prev") {
-          // 30 hari sebelum 30 hari terakhir
           dateRange = { startDate: "60daysAgo", endDate: "30daysAgo" };
         } else {
           dateRange = { startDate: "30daysAgo", endDate: "today" };
@@ -187,15 +177,12 @@ export default async function handler(
       request.dimensions = [{ name: dimension }];
     }
 
-    // Log permintaan untuk debugging
     console.log("GA API request:", JSON.stringify(request, null, 2));
 
     const [response] = await analyticsDataClient.runReport(request);
 
-    // Log respons lengkap dari GA API untuk debugging
     console.log("GA API response:", JSON.stringify(response, null, 2));
 
-    // Periksa apakah ada baris data yang valid
     if (!response || !response.rows || response.rows.length === 0) {
       if (type === "timeseries") {
         return res.status(200).json({ data: [] });
@@ -204,7 +191,6 @@ export default async function handler(
     }
 
     if (type === "timeseries") {
-      // Kembalikan array data dengan dua metrik: activeUsers dan averageEngagementTimePerUser
       const data = response.rows.map((row) => ({
         date: row.dimensionValues?.[0]?.value || "Unknown Date",
         activeUsers: Number(row.metricValues?.[0]?.value) || 0,
@@ -213,7 +199,6 @@ export default async function handler(
       return res.status(200).json({ data });
     }
 
-    // Untuk daily, weekly, monthly (aggregate metrics)
     const users = Number(response.rows[0].metricValues?.[0]?.value) || 0;
     return res.status(200).json({ users });
   } catch (error: any) {
@@ -224,14 +209,12 @@ export default async function handler(
     if (error.details) {
       console.error("Google API Error Details:", error.details);
     }
-    // Memberikan pesan error yang lebih informatif kepada klien
     let errorMessage = "Failed to fetch analytics data.";
     if (error.details && typeof error.details === "string") {
       errorMessage = `Google Analytics API Error: ${error.details}`;
     } else if (error.message) {
       errorMessage = `Server Error: ${error.message}`;
     } else if (error.code === 7 || error.code === 16) {
-      // PERMISSION_DENIED (7), UNAUTHENTICATED (16)
       errorMessage =
         "Authentication or permission error with Google Analytics. Check your service account permissions and GOOGLE_APPLICATION_CREDENTIALS.";
     }
