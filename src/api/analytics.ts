@@ -4,10 +4,10 @@ import fs from "fs";
 
 let analyticsDataClient: BetaAnalyticsDataClient;
 
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+if (process.env.VERCEL_GOOGLE_APPLICATION_CREDENTIALS) {
   try {
     const credentials = JSON.parse(
-      process.env.GOOGLE_APPLICATION_CREDENTIALS
+      process.env.VERCEL_GOOGLE_APPLICATION_CREDENTIALS
     );
     analyticsDataClient = new BetaAnalyticsDataClient({
       credentials: {
@@ -32,7 +32,7 @@ if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   );
 }
 
-const propertyId = process.env.GA_PROPERTY_ID;
+const propertyId = process.env.VERCEL_GA_PROPERTY_ID;
 
 export default async function handler(
   req: NextApiRequest,
@@ -49,7 +49,7 @@ export default async function handler(
 
   if (process.env.NODE_ENV === "development") {
     const credentialsPath =
-      process.env.GOOGLE_APPLICATION_CREDENTIALS;
+      process.env.VERCEL_GOOGLE_APPLICATION_CREDENTIALS;
     if (credentialsPath) {
       console.log(
         `[DEBUG] GOOGLE_APPLICATION_CREDENTIALS path: ${credentialsPath}`
