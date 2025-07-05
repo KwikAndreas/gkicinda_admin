@@ -1,13 +1,13 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
-import fs from "fs"; // Digunakan untuk pemeriksaan kredensial
+import fs from "fs";
 
 let analyticsDataClient: BetaAnalyticsDataClient;
 
-if (process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   try {
     const credentials = JSON.parse(
-      process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON
+      process.env.GOOGLE_APPLICATION_CREDENTIALS
     );
     analyticsDataClient = new BetaAnalyticsDataClient({
       credentials: {
@@ -23,19 +23,16 @@ if (process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON) {
       "[SERVER] Error parsing GOOGLE_APPLICATION_CREDENTIALS_JSON:",
       e
     );
-    // Fallback ke inisialisasi default jika parsing gagal
     analyticsDataClient = new BetaAnalyticsDataClient();
   }
 } else {
-  // Jika GOOGLE_APPLICATION_CREDENTIALS_JSON tidak disetel, biarkan SDK mencari
-  // GOOGLE_APPLICATION_CREDENTIALS (path) atau kredensial default GCE/Cloud Run
   analyticsDataClient = new BetaAnalyticsDataClient();
   console.warn(
     "[SERVER] GOOGLE_APPLICATION_CREDENTIALS_JSON not found. Relying on default credential lookup."
   );
 }
 
-const propertyId = process.env.VITE_GA_PROPERTY_ID;
+const propertyId = process.env.GA_PROPERTY_ID;
 
 export default async function handler(
   req: NextApiRequest,
@@ -55,7 +52,7 @@ export default async function handler(
   // Di produksi, pastikan GOOGLE_APPLICATION_CREDENTIALS disetel dan mengarah ke file JSON yang benar
   if (process.env.NODE_ENV === "development") {
     const credentialsPath =
-      process.env.VITE_GOOGLE_APPLICATION_CREDENTIALS_JSON;
+      process.env.GOOGLE_APPLICATION_CREDENTIALS;
     if (credentialsPath) {
       console.log(
         `[DEBUG] GOOGLE_APPLICATION_CREDENTIALS path: ${credentialsPath}`
